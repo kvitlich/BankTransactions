@@ -18,16 +18,19 @@ namespace BankSystem
             Accounts.Add(new Account("Adolf"));
 
 
-            for (int j = 0; j < Accounts.Count; j++)
+            for (int i = 0; i < 100; i++) // Сто раз перекидывают по 100 чего-то друг другу на баланс
             {
-                object[] arguments;
-                lock (SyncObject)
+                for (int j = 0; j < Accounts.Count; j++)
                 {
-                    if (j == Accounts.Count - 1)
-                        arguments = new object[] { Accounts[0], 100 };
-                    else
-                        arguments = new object[] { Accounts[j + 1], 100 };
-                    ThreadPool.QueueUserWorkItem(Accounts[j].Send, arguments);
+                    object[] arguments;
+                    lock (SyncObject)
+                    {
+                        if (j == Accounts.Count - 1)
+                            arguments = new object[] { Accounts[0], 100 };
+                        else
+                            arguments = new object[] { Accounts[j + 1], 100 };
+                        ThreadPool.QueueUserWorkItem(Accounts[j].Send, arguments);  //Переводим следующему позьзователю 100
+                    }
                 }
             }
             //   Thread.Sleep(1000);
